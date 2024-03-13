@@ -16,6 +16,12 @@ int main(int argc, char *argv[]) {
 
   KittiDataDirPtr ptr;
   KittiDataDirErrors err = kitti_data_dir_create(input_dir, &ptr);
-  LOG("Error %d\n", err);
+  if (err != KITTI_DATA_DIR_ERRORS_NONE) {
+    LOG("Kitti data directory error %d", err);
+    return 0;
+  }
+
+  kitti_data_dir_load_img(ptr, 0, 0);
+
   return 0;
 }

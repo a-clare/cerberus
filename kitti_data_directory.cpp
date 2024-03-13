@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 struct KittiDataDir {
   const char* root;
@@ -84,11 +86,22 @@ KittiDataDirErrors kitti_data_dir_create(const char* root,
   (*dir)->image03_cnt = count_file_types(root, "image_03/data/", "png");
   (*dir)->velo_cnt    = count_file_types(root, "velodyne_points/data/", "bin");
 
-  LOG("Num 00 %d", (*dir)->image00_cnt);
-  LOG("Num 01 %d", (*dir)->image01_cnt);
-  LOG("Num 02 %d", (*dir)->image02_cnt);
-  LOG("Num 03 %d", (*dir)->image03_cnt);
   return KITTI_DATA_DIR_ERRORS_NONE;
+}
+
+void kitti_data_dir_free(KittiDataDirPtr dir) {
+  free(dir);
+}
+
+void kitti_data_dir_load_img(KittiDataDirPtr dir,
+                             uint32_t sensorNum,
+                             uint32_t imgNum) {
+  char buf[1024];
+  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_00", imgNum);
+  LOG("Loading image %s", buf);
+  int width, height, num_channels;
+  unsigned char* png_image_data = stbi_load(buf, &width, &height, &num_channels, 0);
+  LOG("Image size is %d x %d", width, height);
 }
 
 static uint32_t count_file_types(const char* root, 

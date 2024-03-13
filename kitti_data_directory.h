@@ -1,6 +1,8 @@
 #ifndef CERBERUS_KITTI_DATA_DIRECTORY_H_
 #define CERBERUS_KITTI_DATA_DIRECTORY_H_
 
+#include <stdint.h>
+
 typedef struct KittiDataDir KittiDataDir;
 // We will almost exclusively work with pointers to data directories, so 
 // providing a typedef to make things a bit clearer
@@ -33,5 +35,19 @@ typedef enum {
 KittiDataDirErrors kitti_data_dir_create(const char* root,
                                          KittiDataDirPtr* dir);
 
+/**
+ * @brief frees the memory allocated for dir
+ */
+void kitti_data_dir_free(KittiDataDirPtr dir);
 
+/**
+ * @brief Load an image from the data directory
+ * 
+ * @param dir 
+ * @param sensorNum 0, 1, 2, 3 for image_00, image_01, etc...
+ * @param imgNum image (orsequence) number to load
+ */
+void kitti_data_dir_load_img(KittiDataDirPtr dir,
+                             uint32_t sensorNum,
+                             uint32_t imgNum);
 #endif
