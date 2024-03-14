@@ -4,6 +4,7 @@
 #include <cstdio>
 #include "kitti_data_directory.h"
 #include "logger.h"
+#include "vis/vis.h"
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
@@ -23,5 +24,12 @@ int main(int argc, char *argv[]) {
 
   kitti_data_dir_load_img(ptr, 0, 0);
 
+
+  vis_init("Cerberus", 1200, 1080);
+  while (vis_is_window_running()) {
+    vis_frame_start();
+    
+    vis_frame_end();
+  }
   return 0;
 }
