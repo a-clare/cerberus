@@ -2,6 +2,7 @@
 #define CERBERUS_KITTI_DATA_DIRECTORY_H_
 
 #include <stdint.h>
+#include "stereo_image.h"
 
 typedef struct KittiDataDir KittiDataDir;
 // We will almost exclusively work with pointers to data directories, so 
@@ -49,5 +50,6 @@ void kitti_data_dir_free(KittiDataDirPtr dir);
  */
 void kitti_data_dir_load_img(KittiDataDirPtr dir,
                              uint32_t sensorNum,
-                             uint32_t imgNum);
+                             uint32_t imgNum,
+                             StereoImage* stereoImage);
 #endif

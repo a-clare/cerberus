@@ -95,13 +95,18 @@ void kitti_data_dir_free(KittiDataDirPtr dir) {
 
 void kitti_data_dir_load_img(KittiDataDirPtr dir,
                              uint32_t sensorNum,
-                             uint32_t imgNum) {
+                             uint32_t imgNum,
+                             StereoImage* stereoImage) {
   char buf[1024];
-  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_00", imgNum);
+  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_02", imgNum);
   LOG("Loading image %s", buf);
   int width, height, num_channels;
-  unsigned char* png_image_data = stbi_load(buf, &width, &height, &num_channels, 0);
-  LOG("Image size is %d x %d", width, height);
+  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 4);
+  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_03", imgNum);
+  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 4);
+  stereoImage->width = width;
+  stereoImage->height = height;
+  LOG("Image size is %d x %d", stereoImage->width, stereoImage->height);
 }
 
 static uint32_t count_file_types(const char* root, 
