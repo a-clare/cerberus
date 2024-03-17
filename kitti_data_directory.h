@@ -3,11 +3,27 @@
 
 #include <stdint.h>
 #include "stereo_image.h"
+#include "image.h"
 
 typedef struct KittiDataDir KittiDataDir;
 // We will almost exclusively work with pointers to data directories, so 
 // providing a typedef to make things a bit clearer
 typedef struct KittiDataDir* KittiDataDirPtr;
+
+/**
+ * @brief More descriptive sensor names for the kitti data.
+ * Instead of saying image_00, or image_02 (for example), now users
+ * can provide LeftImgGrey to indicate they want the left greyscale image
+ */
+enum class KittiDataDirSensorNames {
+  // 
+  LeftImgGrey,
+  LeftImgRGB,
+  RightImgGrey,
+  RightImgRGB,
+  HDL64
+};
+
 
 typedef enum {
   KITTI_DATA_DIR_ERRORS_NONE,
@@ -16,6 +32,8 @@ typedef enum {
   KITTI_DATA_DIR_ERRORS_INVALID_DIR,
   KITTI_DATA_DIR_ERRORS_NO_IMAGE_DIR,
   KITTI_DATA_DIR_ERRORS_NO_VELO_DIR,
+  KITTI_DATA_DIR_ERRORS_INVALID_SENSOR_NAME,
+  KITTI_DATA_DIR_ERRORS_INVALID_SEQ_NUM,
 } KittiDataDirErrors;
 
 /**
@@ -52,4 +70,21 @@ void kitti_data_dir_load_img(KittiDataDirPtr dir,
                              uint32_t sensorNum,
                              uint32_t imgNum,
                              StereoImage* stereoImage);
+
+/**
+ * @brief Loads one of the grey scale images from the kitti data directory
+ * 
+ * @param dir kitti data directory object that contains the meta information about the directory
+ * @param sensorName must be LeftImgGrey or RightImgGrey
+ * @param seqNum the sequence number to load (0, 1, 2, ... N, where N is the number of images in the directory)
+ * @param img the return image 
+ * @return KITTI_DATA_DIR_ERRORS_NONE if successfully loaded the image
+ * @return KITTI_DATA_DIR_ERRORS_INVALID_SENSOR_NAME if sensorName is not valid
+ * @return KITTI_DATA_DIR_ERRORS_NULL_INPUT if dir == NULL or img == NULL
+ * @return KITTI_DATA_DIR_ERRORS_INVALID_SEQ_NUM if seqNum is not valid for dir (seqNum > number of images in dir). Likely means you have read all the images in the directory
+ */
+KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
+                                             KittiDataDirSensorNames sensorName,
+                                             uint32_t seqNum,
+                                             ImageU8* img);
 #endif

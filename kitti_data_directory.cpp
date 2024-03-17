@@ -9,17 +9,27 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+
+/**
+ * @brief A helper struct to hold a full path to some kitti sensor data
+ * For example path might == "/some/path/to/image_03/data/000123.png"
+ */
+struct KittiSensorPath {
+  static constexpr uint64_t KittiSensorPathSize = 1024;
+  char path[KittiSensorPathSize];
+};
+
 struct KittiDataDir {
   const char* root;
-  // The number of images in image_00/
+  // The number of images in image_00/. Sensor name is LeftImgGrey
   uint32_t image00_cnt;
-  // The number of images in image_01/
+  // The number of images in image_01/. Sensor name is RightImgGrey
   uint32_t image01_cnt;
-  // The number of images in image_02/
+  // The number of images in image_02/. Sensor name is LeftImgRGB
   uint32_t image02_cnt;
-  // The number of images in image_03/
+  // The number of images in image_03/. Sensor name is RightImgRGB
   uint32_t image03_cnt;
-  // The number of velodyne binary files in velodyne_points/
+  // The number of velodyne binary files in velodyne_points/. Sensor name is HDL64
   uint32_t velo_cnt;
 };
 
@@ -29,6 +39,15 @@ struct KittiDataDir {
  */
 static uint32_t count_file_types(const char* root, const char* folderName,
                                  const char* fileExt);
+
+/**
+ * @brief Takes the path to some kitti data directory (root), a sensor name, and
+ * a sequence number and creates a full path to the sensor data (path).
+ */
+static void sensor_name_to_path(const char* root,
+                                KittiDataDirSensorNames name,
+                                uint64_t seqNum,
+                                KittiSensorPath* path);
 
 KittiDataDirErrors kitti_data_dir_create(const char* root,
                                          KittiDataDirPtr* dir) {
@@ -98,20 +117,52 @@ void kitti_data_dir_load_img(KittiDataDirPtr dir,
                              uint32_t imgNum,
                              StereoImage* stereoImage) {
   char buf[1024];
-  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_02", imgNum);
+  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_00", imgNum);
   LOG("Loading image %s", buf);
   int width, height, num_channels;
-  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 4);
-  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_03", imgNum);
-  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 4);
+  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 1);
+  snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_01", imgNum);
+  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 1);
   stereoImage->width = width;
   stereoImage->height = height;
   LOG("Image size is %d x %d", stereoImage->width, stereoImage->height);
 }
 
-static uint32_t count_file_types(const char* root, 
-                                 const char* folderName,
-                                 const char* fileExt) {
+KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
+                                             KittiDataDirSensorNames sensorName,
+                                             uint32_t seqNum,
+                                             ImageU8* img) {
+  if (dir == NULL || img == NULL) {
+    return KITTI_DATA_DIR_ERRORS_NULL_INPUT;
+  }
+  // Since we are loading a single channel image, we expect the sensor name to
+  // be one of the grey scale images
+  if (sensorName != KittiDataDirSensorNames::LeftImgGrey && sensorName != KittiDataDirSensorNames::RightImgGrey) {
+    return KITTI_DATA_DIR_ERRORS_INVALID_SENSOR_NAME;
+  }
+  if (seqNum > dir->image00_cnt || seqNum > dir->image01_cnt) {
+    return KITTI_DATA_DIR_ERRORS_INVALID_SEQ_NUM;
+  }
+  KittiSensorPath sensor_path;
+  sensor_name_to_path(dir->root, sensorName, seqNum, &sensor_path);
+
+  // TODO: For now we are using stb_image to load png files. This library allocates
+  // memory so we load the image and copy over to our expected data structure. Would be nice to 
+  // load directly into our image and skip the copy
+  int width = 0, height = 0, num_channels = 0;
+  const unsigned char* raw_img = stbi_load(sensor_path.path, &width, &height, &num_channels, 1);
+
+  memcpy(&img->image[0], raw_img, width * height);
+  stbi_image_free((void*)raw_img);
+
+  img->height = height;
+  img->width  = width;
+  return KITTI_DATA_DIR_ERRORS_NONE;
+}
+
+uint32_t count_file_types(const char* root, 
+                          const char* folderName,
+                          const char* fileExt) {
   uint32_t count = 0;
 
   // Create the /full/folder/name/path
@@ -131,4 +182,63 @@ static uint32_t count_file_types(const char* root,
     }
   }
   return count;
+}
+
+void sensor_name_to_path(const char* root,
+                                KittiDataDirSensorNames name,
+                                uint64_t seqNum,
+                                KittiSensorPath* path) {
+  static const char* sensor_path_names[5] = {
+    "image_00/",
+    "image_01/",
+    "image_02/",
+    "image_03/",
+    "velodyne_points/"
+  };
+  static const char* sensor_exts[2] = {
+    // All images are stored as *.png files
+    "png",
+    // Velodyne points are stored as *.bin files
+    "bin"
+  };
+  // Pointer to the string in sensor_path_names that will be our input
+  // sensor name, need to check 'name' before can deterime the string
+  const char* sensor_name;
+  // Pointer to the file ext
+  const char* sensor_ext;
+
+  switch (name) {
+    case KittiDataDirSensorNames::LeftImgGrey:
+      sensor_name = sensor_path_names[0];
+      sensor_ext  = sensor_exts[0]; 
+      break;
+    case KittiDataDirSensorNames::RightImgGrey:
+      sensor_name = sensor_path_names[1];
+      sensor_ext  = sensor_exts[0];
+      break;
+    case KittiDataDirSensorNames::LeftImgRGB:
+      sensor_name = sensor_path_names[2];
+      sensor_ext  = sensor_exts[0];
+      break;
+    case KittiDataDirSensorNames::RightImgRGB:
+      sensor_name = sensor_path_names[4];
+      sensor_ext  = sensor_exts[0];
+      break;
+    case KittiDataDirSensorNames::HDL64:
+      sensor_name = sensor_path_names[5];
+      sensor_ext  = sensor_exts[1];
+      break;
+    default:
+      // TODO: Add assert? Although its hard to see how we would get an unexpected enum?
+      break;
+  }
+  // This is going to create (for example) /some/path/that/is/root/image_00/data/0000000000.png
+  snprintf(path->path, 
+           path->KittiSensorPathSize,
+           "%s/%s/data/%010lu.%s", 
+           root,
+           sensor_name,
+           seqNum,
+           sensor_ext);
+  LOG("Loading path %s", path->path);
 }
