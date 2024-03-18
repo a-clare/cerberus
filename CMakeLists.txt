@@ -7,6 +7,6 @@ include_directories(${GTEST_INCLUDE_DIR})
 add_subdirectory(vis/external)
 add_subdirectory(vis)
 
-add_executable(${PROJECT_NAME} main.cpp kitti_data_directory.cpp)
+add_executable(${PROJECT_NAME} main.cpp kitti_data_directory.cpp image_window.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC vis)
 add_subdirectory(tests)

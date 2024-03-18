@@ -5,6 +5,7 @@
 #include <cstdio>
 #include "kitti_data_directory.h"
 #include "logger.h"
+#include "image_window.h"
 #include "vis/vis.h"
 
 int main(int argc, char *argv[]) {
@@ -23,31 +24,18 @@ int main(int argc, char *argv[]) {
     LOG("Kitti data directory error %d", err);
     return 0;
   }
-  ImageU8 image;
-  kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::LeftImgGrey, 0, &image);
+  ImageU8 left_image;
+  kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::LeftImgGrey, 0, &left_image);
+  ImageU8 right_image;
+  kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::RightImgGrey, 0, &right_image);
 
-  // Create a OpenGL texture identifier
-  GLuint image_texture;
-  glGenTextures(1, &image_texture);
-  glBindTexture(GL_TEXTURE_2D, image_texture);
-
-  // Setup filtering parameters for display
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, image.width, image.height, 0, GL_RED, GL_UNSIGNED_BYTE, &image.image[0]);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, GL_RED);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_RED);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, GL_RED);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, GL_RED);
+  ImageWindowPtr left_window = image_window_create(&left_image);
+  ImageWindowPtr right_window = image_window_create(&right_image);
   while (vis_is_window_running()) {
     vis_frame_start();
 
-    ImGui::Begin("Image");
-
-    ImGui::Image((void*)(intptr_t)image_texture, ImVec2(image.width * 0.5f, image.height* 0.5f), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
-    ImGui::End();
+    image_window_draw(left_window, "left");
+    image_window_draw(right_window, "right");
     vis_frame_end();
   }
   return 0;
