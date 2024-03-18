@@ -13,10 +13,11 @@ static constexpr uint32_t IMAGEU8_MAX_SIZE = IMAGEU8_MAX_WIDTH * IMAGEU8_MAX_HEI
  * 
  */
 struct ImageU8 {
-  uint64_t timestamp = 0;
   uint32_t width = 0;
   uint32_t height = 0;
   std::array<uint8_t, IMAGEU8_MAX_SIZE> image;
 };
+
+ImageU8* image_u8_read(const char* path);
 
 #endif

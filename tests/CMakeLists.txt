@@ -4,7 +4,8 @@ add_executable(${PROJECT_NAME}_tests
 
 target_link_libraries(${PROJECT_NAME}_tests
         GTest::GTest
-        GTest::Main)
+        GTest::Main
+        clib)
 
 # This command will run the unit tests as part of the build
 add_custom_command(

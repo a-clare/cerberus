@@ -146,17 +146,7 @@ KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
   KittiSensorPath sensor_path;
   sensor_name_to_path(dir->root, sensorName, seqNum, &sensor_path);
 
-  // TODO: For now we are using stb_image to load png files. This library allocates
-  // memory so we load the image and copy over to our expected data structure. Would be nice to 
-  // load directly into our image and skip the copy
-  int width = 0, height = 0, num_channels = 0;
-  const unsigned char* raw_img = stbi_load(sensor_path.path, &width, &height, &num_channels, 1);
-
-  memcpy(&img->image[0], raw_img, width * height);
-  stbi_image_free((void*)raw_img);
-
-  img->height = height;
-  img->width  = width;
+  
   return KITTI_DATA_DIR_ERRORS_NONE;
 }
 
