@@ -24,13 +24,13 @@ int main(int argc, char *argv[]) {
     LOG("Kitti data directory error %d", err);
     return 0;
   }
-  ImageU8 left_image;
+  ImageU8Ptr left_image;
   kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::LeftImgGrey, 0, &left_image);
-  ImageU8 right_image;
+  ImageU8Ptr right_image;
   kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::RightImgGrey, 0, &right_image);
 
-  ImageWindowPtr left_window = image_window_create(&left_image);
-  ImageWindowPtr right_window = image_window_create(&right_image);
+  ImageWindowPtr left_window = image_window_create(left_image);
+  ImageWindowPtr right_window = image_window_create(right_image);
   while (vis_is_window_running()) {
     vis_frame_start();
 

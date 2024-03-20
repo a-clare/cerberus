@@ -2,22 +2,33 @@
 #define CERBERUS_IMAGE_H_
 
 #include <cstdint>
-#include <array>
 
-static constexpr uint32_t IMAGEU8_MAX_WIDTH  = 1600;
-static constexpr uint32_t IMAGEU8_MAX_HEIGHT = 1200;
-static constexpr uint32_t IMAGEU8_MAX_SIZE = IMAGEU8_MAX_WIDTH * IMAGEU8_MAX_HEIGHT;
+typedef struct ImageU8 ImageU8;
+typedef struct ImageU8* ImageU8Ptr;
 
-/**
- * @brief Single 8bit channel image (grey scale for example)
- * 
- */
-struct ImageU8 {
-  uint32_t width = 0;
-  uint32_t height = 0;
-  std::array<uint8_t, IMAGEU8_MAX_SIZE> image;
+enum ImageErrors {
+  IMAGE_ERRORS_NONE,
+  IMAGE_ERRORS_READ
 };
 
-ImageU8* image_u8_read(const char* path);
+struct ImageSize {
+  uint32_t width;
+  uint32_t height;
+};
 
+/**
+ * @brief Read in a single channel 8 bit image
+ * Allocates memory for img
+ * 
+ * @param path /some/path/to/an/image.png
+ * @param img the return image
+ * @return IMAGE_ERRORS_NONE if successful 
+ * @return IMAGE_ERRORS_READ if unable to read, likely a bad path
+ */
+ImageErrors image_read_u8(const char* path,
+                          ImageU8Ptr* img);
+
+ImageSize image_get_size_u8(const ImageU8Ptr img);
+
+uint8_t* image_get_image_data_u8(const ImageU8Ptr img);
 #endif

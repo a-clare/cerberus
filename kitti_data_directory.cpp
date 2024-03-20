@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 
 /**
  * @brief A helper struct to hold a full path to some kitti sensor data
@@ -120,9 +117,9 @@ void kitti_data_dir_load_img(KittiDataDirPtr dir,
   snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_00", imgNum);
   LOG("Loading image %s", buf);
   int width, height, num_channels;
-  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 1);
+  // stereoImage->left = image_u8_read(buf);
   snprintf(buf, 1024, "%s/%s/data/%010d.png", dir->root, "image_01", imgNum);
-  stereoImage->left = stbi_load(buf, &width, &height, &num_channels, 1);
+  // stereoImage->left = image_u8_read(buf)
   stereoImage->width = width;
   stereoImage->height = height;
   LOG("Image size is %d x %d", stereoImage->width, stereoImage->height);
@@ -131,7 +128,7 @@ void kitti_data_dir_load_img(KittiDataDirPtr dir,
 KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
                                              KittiDataDirSensorNames sensorName,
                                              uint32_t seqNum,
-                                             ImageU8* img) {
+                                             ImageU8Ptr* img) {
   if (dir == NULL || img == NULL) {
     return KITTI_DATA_DIR_ERRORS_NULL_INPUT;
   }
@@ -146,6 +143,7 @@ KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
   KittiSensorPath sensor_path;
   sensor_name_to_path(dir->root, sensorName, seqNum, &sensor_path);
 
+  image_read_u8(sensor_path.path, img);
   
   return KITTI_DATA_DIR_ERRORS_NONE;
 }

@@ -86,5 +86,5 @@ void kitti_data_dir_load_img(KittiDataDirPtr dir,
 KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
                                              KittiDataDirSensorNames sensorName,
                                              uint32_t seqNum,
-                                             ImageU8* img);
+                                             ImageU8Ptr* img);
 #endif
