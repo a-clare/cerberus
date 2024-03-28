@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
+extern "C" {
 #include "image.h"
 #include "true_img_data.h"
-
+}
 TEST(ImageU8, read) {
   // TODO: Replace this path with a test data directory
   ImageU8Ptr img;

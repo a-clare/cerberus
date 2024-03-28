@@ -1,7 +1,7 @@
 #ifndef CERBERUS_LOGGER_H_
 #define CERBERUS_LOGGER_H_
 
-#include <cstdio>
+#include <stdio.h>
 
 #define LOG(fmt, ...) \
   do { \

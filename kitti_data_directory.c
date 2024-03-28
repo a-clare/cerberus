@@ -6,15 +6,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+
+#define KITTI_SENSOR_PATH_SIZE 1024
 
 /**
  * @brief A helper struct to hold a full path to some kitti sensor data
  * For example path might == "/some/path/to/image_03/data/000123.png"
  */
-struct KittiSensorPath {
-  static constexpr uint64_t KittiSensorPathSize = 1024;
-  char path[KittiSensorPathSize];
-};
+typedef struct {
+  char path[KITTI_SENSOR_PATH_SIZE];
+} KittiSensorPath;
 
 struct KittiDataDir {
   const char* root;
@@ -134,7 +136,7 @@ KittiDataDirErrors kiti_data_dir_load_img_u8(KittiDataDirPtr dir,
   }
   // Since we are loading a single channel image, we expect the sensor name to
   // be one of the grey scale images
-  if (sensorName != KittiDataDirSensorNames::LeftImgGrey && sensorName != KittiDataDirSensorNames::RightImgGrey) {
+  if (sensorName != KITII_DATA_DIR_LeftImgGrey && sensorName != KITII_DATA_DIR_RightImgGrey) {
     return KITTI_DATA_DIR_ERRORS_INVALID_SENSOR_NAME;
   }
   if (seqNum > dir->image00_cnt || seqNum > dir->image01_cnt) {
@@ -196,23 +198,23 @@ void sensor_name_to_path(const char* root,
   const char* sensor_ext;
 
   switch (name) {
-    case KittiDataDirSensorNames::LeftImgGrey:
+    case KITII_DATA_DIR_LeftImgGrey:
       sensor_name = sensor_path_names[0];
       sensor_ext  = sensor_exts[0]; 
       break;
-    case KittiDataDirSensorNames::RightImgGrey:
+    case KITII_DATA_DIR_RightImgGrey:
       sensor_name = sensor_path_names[1];
       sensor_ext  = sensor_exts[0];
       break;
-    case KittiDataDirSensorNames::LeftImgRGB:
+    case KITII_DATA_DIR_LeftImgRGB:
       sensor_name = sensor_path_names[2];
       sensor_ext  = sensor_exts[0];
       break;
-    case KittiDataDirSensorNames::RightImgRGB:
+    case KITII_DATA_DIR_RightImgRGB:
       sensor_name = sensor_path_names[4];
       sensor_ext  = sensor_exts[0];
       break;
-    case KittiDataDirSensorNames::HDL64:
+    case KITII_DATA_DIR_HDL64:
       sensor_name = sensor_path_names[5];
       sensor_ext  = sensor_exts[1];
       break;
@@ -222,7 +224,7 @@ void sensor_name_to_path(const char* root,
   }
   // This is going to create (for example) /some/path/that/is/root/image_00/data/0000000000.png
   snprintf(path->path, 
-           path->KittiSensorPathSize,
+           KITTI_SENSOR_PATH_SIZE,
            "%s/%s/data/%010lu.%s", 
            root,
            sensor_name,

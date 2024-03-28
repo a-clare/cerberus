@@ -1,8 +1,7 @@
 #include <dirent.h>
 #include <string.h>
-#include <glad/glad.h>
 
-#include <cstdio>
+#include <stdio.h>
 #include "kitti_data_directory.h"
 #include "logger.h"
 
@@ -22,9 +21,9 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   ImageU8Ptr left_image;
-  kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::LeftImgGrey, 0, &left_image);
+  kiti_data_dir_load_img_u8(ptr, KITII_DATA_DIR_LeftImgGrey, 0, &left_image);
   ImageU8Ptr right_image;
-  kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::RightImgGrey, 0, &right_image);
+  kiti_data_dir_load_img_u8(ptr, KITII_DATA_DIR_RightImgGrey, 0, &right_image);
 
   image_write(left_image);
   return 0;

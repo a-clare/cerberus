@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct StereoImage {
+typedef struct {
   // Time of the images in nanoseconds
   uint64_t timestamp;
   // Width of a single image, assumes left and right are the same size
@@ -12,6 +12,6 @@ struct StereoImage {
   uint32_t height;
   unsigned char* left;
   unsigned char* right;
-};
+} StereoImage;
 
 #endif

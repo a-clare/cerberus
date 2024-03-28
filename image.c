@@ -1,23 +1,22 @@
 #include "image.h"
-#include <array>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-static constexpr uint32_t IMAGEU8_MAX_WIDTH  = 1600;
-static constexpr uint32_t IMAGEU8_MAX_HEIGHT = 1200;
-static constexpr uint32_t IMAGEU8_MAX_SIZE = IMAGEU8_MAX_WIDTH * IMAGEU8_MAX_HEIGHT;
+#define IMAGEU8_MAX_WIDTH 1600
+#define IMAGEU8_MAX_HEIGHT 1200
+#define IMAGEU8_MAX_SIZE (IMAGEU8_MAX_WIDTH * IMAGEU8_MAX_HEIGHT)
 
 /**
  * @brief Single 8bit channel image (grey scale for example)
  * 
  */
 struct ImageU8 {
-  uint32_t width = 0;
-  uint32_t height = 0;
-  std::array<uint8_t, IMAGEU8_MAX_SIZE> image;
+  uint32_t width;
+  uint32_t height;
+  uint8_t image[IMAGEU8_MAX_SIZE];
 };
 
 ImageErrors image_read_u8(const char* path,

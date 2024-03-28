@@ -1,20 +1,20 @@
 #ifndef CERBERUS_IMAGE_H_
 #define CERBERUS_IMAGE_H_
 
-#include <cstdint>
+#include <stdint.h>
 
 typedef struct ImageU8 ImageU8;
 typedef struct ImageU8* ImageU8Ptr;
 
-enum ImageErrors {
+typedef enum {
   IMAGE_ERRORS_NONE,
   IMAGE_ERRORS_READ
-};
+} ImageErrors;
 
-struct ImageSize {
+typedef struct {
   uint32_t width;
   uint32_t height;
-};
+} ImageSize;
 
 /**
  * @brief Read in a single channel 8 bit image

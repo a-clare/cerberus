@@ -15,14 +15,13 @@ typedef struct KittiDataDir* KittiDataDirPtr;
  * Instead of saying image_00, or image_02 (for example), now users
  * can provide LeftImgGrey to indicate they want the left greyscale image
  */
-enum class KittiDataDirSensorNames {
-  // 
-  LeftImgGrey,
-  LeftImgRGB,
-  RightImgGrey,
-  RightImgRGB,
-  HDL64
-};
+typedef enum {
+  KITII_DATA_DIR_LeftImgGrey,
+  KITII_DATA_DIR_LeftImgRGB,
+  KITII_DATA_DIR_RightImgGrey,
+  KITII_DATA_DIR_RightImgRGB,
+  KITII_DATA_DIR_HDL64
+} KittiDataDirSensorNames;
 
 
 typedef enum {
