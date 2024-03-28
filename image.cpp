@@ -3,6 +3,8 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 static constexpr uint32_t IMAGEU8_MAX_WIDTH  = 1600;
 static constexpr uint32_t IMAGEU8_MAX_HEIGHT = 1200;
@@ -49,4 +51,8 @@ ImageSize image_get_size_u8(const ImageU8Ptr img) {
 
 uint8_t* image_get_image_data_u8(const ImageU8Ptr img) {
   return &img->image[0];
+}
+
+void image_write(const ImageU8Ptr img) {
+  stbi_write_png("/home/atc/cerberus/test.png", img->width, img->height, 1, &img->image[0], img->width);
 }

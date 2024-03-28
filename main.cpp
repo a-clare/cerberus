@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  vis_init("Cerberus", 1200, 1080);
+  // vis_init("Cerberus", 1200, 1080);
   const char *input_dir = argv[1];
   LOG("Input directory is %s", input_dir);
 
@@ -29,14 +29,15 @@ int main(int argc, char *argv[]) {
   ImageU8Ptr right_image;
   kiti_data_dir_load_img_u8(ptr, KittiDataDirSensorNames::RightImgGrey, 0, &right_image);
 
-  ImageWindowPtr left_window = image_window_create(left_image);
-  ImageWindowPtr right_window = image_window_create(right_image);
-  while (vis_is_window_running()) {
-    vis_frame_start();
+  // ImageWindowPtr left_window = image_window_create(left_image);
+  // ImageWindowPtr right_window = image_window_create(right_image);
+  // while (vis_is_window_running()) {
+  //   vis_frame_start();
 
-    image_window_draw(left_window, "left");
-    image_window_draw(right_window, "right");
-    vis_frame_end();
-  }
+  //   image_window_draw(left_window, "left");
+  //   image_window_draw(right_window, "right");
+  //   vis_frame_end();
+  // }
+  image_write(left_image);
   return 0;
 }

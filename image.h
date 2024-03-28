@@ -31,4 +31,6 @@ ImageErrors image_read_u8(const char* path,
 ImageSize image_get_size_u8(const ImageU8Ptr img);
 
 uint8_t* image_get_image_data_u8(const ImageU8Ptr img);
+
+void image_write(const ImageU8Ptr img);
 #endif
