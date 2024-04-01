@@ -27,8 +27,8 @@ add_subdirectory(tests)
 
 find_package(HIDAPI REQUIRED)
 message(STATUS "libhidapi: include dir at ${HIDAPI_INCLUDE_DIRS}")
-  message(STATUS "libhidapi: libraries at ${HIDAPI_LIBRARIES}")
-  include_directories(${HIDAPI_INCLUDE_DIRS})
+message(STATUS "libhidapi: libraries at ${HIDAPI_LIBRARIES}")
+include_directories(${HIDAPI_INCLUDE_DIRS})
 
 add_executable(zed_test zed_main.c)
-target_link_libraries(zed_test ${HIDAPI_LIBRARIES})
+target_link_libraries(zed_test ${HIDAPI_LIBRARIES} m)
