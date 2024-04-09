@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef enum {
   ZED_IMU_STATUS_NOT_PRESENT = 0,

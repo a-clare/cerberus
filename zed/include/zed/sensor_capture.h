@@ -1,3 +1,10 @@
+/**
+ * @file sensor_capture.h
+ * @brief Contains functionality for reading non camera sensor data from a ZED 2 camera
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef CERBERUS_ZED_SENSOR_CAPTURE_H_
 #define CERBERUS_ZED_SENSOR_CAPTURE_H_
 #ifdef __cplusplus
@@ -6,13 +13,31 @@ extern "C" {
 
 #include "zed/defines.h"
 #include "zed/types.h"
+#include "zed/errors.h"
 
-// "zed_SensorCapture" typically abreviated to zed_sc
+// "zed_SensorCapture" typically abreviated to zed_sc, or zsc
 typedef struct zed_SensorCapture zed_SensorCapture;
 
-zed_SensorCapture* zed_sc_create();
+/**
+ * @brief Create a new sensor capture object.
+ * 
+ * Allocates memory, so when done with the zsc you need to call zed_sc_destroy
+ * 
+ * @param zsc pointer (to pointer) to zsc object
+ * @return ZED_ERRORS_NONE if all goes well
+ * @return ZED_ERRORS_ALLOC_FAIL if a memory allocation error occurred 
+ * @return ZED_ERRORS_NULL_INPUT if the input pointer is null
+ */
+ZED_ERRORS zed_sc_create(zed_SensorCapture** zsc);
 
-void zed_sc_destroy(zed_SensorCapture** zsc);
+/**
+ * @brief Destroy object (free memory allocated)
+ * 
+ * @param zsc 
+ * @return ZED_ERRORS_NONE if all goes well
+ * @return ZED_ERRORS_NULL_INPUT if the input pointer is null
+ */
+ZED_ERRORS zed_sc_destroy(zed_SensorCapture** zsc);
 
 /**
  * @brief Gets the serial numbers for all ZED devices.
@@ -32,11 +57,9 @@ size_t zed_sc_get_device_list(zed_SensorCapture* zsc,
  * 
  * @param zsc sensor capture object working with
  * @param sn the serial number of the device wanting to connect to
- * @return true if successfully initialized
- * @return false otherwise
  */
-bool zed_sc_initialize_sensor(zed_SensorCapture* zsc,
-                              int32_t sn);
+ZED_ERRORS zed_sc_initialize_sensor(zed_SensorCapture* zsc,
+                                    int32_t sn);
 
 /**
  * @param timeout how long to wait for grabbing imu data before returning
@@ -65,16 +88,7 @@ const zed_Environment* zed_sc_get_last_env(uint64_t timeout);
  * @return NULL if something went wrong
  */
 const zed_Temperature* zed_sc_get_last_temperature(uint64_t timeout);
-
-/**
- * @brief Perform a SW reset of the sensor with serial number 'sn'
- * 
- * @param sn serial number of the sensor being reset
- * @return true if successful
- * @return false otherwise
- */
-bool zed_sc_reset_sensor(int32_t sn);  
-
+ 
 #ifdef __cplusplus
 }
 #endif
