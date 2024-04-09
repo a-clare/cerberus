@@ -21,3 +21,14 @@ ZED_ERRORS zed_sc_create(zed_SensorCapture** zsc) {
 
   return ZED_ERRORS_NONE;
 }
+
+ZED_ERRORS zed_sc_destroy(zed_SensorCapture** zsc) {
+  if (zsc == NULL || *zsc == NULL) {
+    return ZED_ERRORS_NULL_INPUT;
+  }
+  // Free the memory and make the input pointer NULL in case someone tries
+  // to use it again after destroyed
+  free(*zsc);
+  *zsc = NULL;
+  return ZED_ERRORS_NONE;
+}
