@@ -43,7 +43,6 @@ inline uint64_t zed_get_wall_time_stamp() {
   return (uint64_t)ts.tv_sec * 1000000000 + (uint64_t)ts.tv_nsec;
 }
 
-static const uint16_t ZED_SL_USB_VENDOR               = 0x2b03; //!< Stereolabs Vendor ID
 static const uint16_t ZED_SL_USB_PROD_ZED_REVA        = 0xf580; //!< Old ZED firmware Product ID
 static const uint16_t ZED_SL_USB_PROD_ZED_M_REVA      = 0xf680;  //!< Old ZED-M binary modified firmware Product ID
 static const uint16_t ZED_SL_USB_PROD_ZED_REVB        = 0xf582;  //!< CBS ZED Firmware Product ID

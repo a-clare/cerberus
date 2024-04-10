@@ -43,14 +43,19 @@ ZED_ERRORS zed_sc_destroy(zed_SensorCapture** zsc);
  * @brief Gets the serial numbers for all ZED devices.
  * DOES NOT allocate serialNumbers, expects caller to have an int[] allocated
  * 
+ * Will return once maxSN is reached, even if there are more devices available
+ * 
  * @param zsc sensor capture object working with
  * @param serialNumbers the array that serial numbers will be written into
- * @param maxSN max number of elements in serialNumbers[]
- * @return size_t the number of serial numbers found || maxSN if reached limit
+ * @param maxSN imax number of elements in serialNumbers[]
+ * @param numSN [return] the number of serial numbers actually found, will be <= maxSN
+ * @return ZED_ERRORS_NONE if all goes well
+ * @return ZED_ERRORS_NULL_INPUT if the input pointer is null
  */
-size_t zed_sc_get_device_list(zed_SensorCapture* zsc,
-                              int32_t* serialNumbers,
-                              size_t maxSN);
+ZED_ERRORS zed_sc_get_device_list(zed_SensorCapture* zsc,
+                                  int32_t* serialNumbers,
+                                  size_t maxSN,
+                                  size_t* numSN);
 
 /**
  * @brief Initialize a connection to a ZED sensor specified by serial number sn
