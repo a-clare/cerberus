@@ -68,8 +68,15 @@ ZED_ERRORS zed_sc_get_device_list(zed_SensorCapture* zsc,
     printf("Manufacturer: %ls\n", cur_dev->manufacturer_string);
     printf("Product: %ls\n", cur_dev->product_string);
     printf("Release number: %d.%d\n", fw_major, fw_minor);
+
+    // Increment our return count of how many zed sensors we found
+    *numSN += 1;
+    if (numSN >= maxSN) {
+      break;
+    }
     cur_dev = cur_dev->next;
   }
 
   hid_free_enumeration(devs);
+  return ZED_ERRORS_NONE;
 }
