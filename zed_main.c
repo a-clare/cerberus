@@ -11,4 +11,13 @@ int main() {
   else {
     printf("Error %s\n", zed_error_str(zed_err));
   }
+  printf("Here\n");
+  int32_t sns[3];
+  size_t result = 0;
+  zed_sc_get_device_list(zsc, sns, 3, &result);
+
+  zed_sc_initialize_sensor(zsc, 29201244);
+
+  printf("Initialized, starting capture\n");
+  zed_sc_start(zsc);
 }

@@ -51,6 +51,7 @@ ZED_ERRORS zed_sc_destroy(zed_SensorCapture** zsc);
  * @param numSN [return] the number of serial numbers actually found, will be <= maxSN
  * @return ZED_ERRORS_NONE if all goes well
  * @return ZED_ERRORS_NULL_INPUT if the input pointer is null
+ * @return ZED_ERRORS_CONNECT_FAIL if unable to connect, or find the Human Interface Device (HID)
  */
 ZED_ERRORS zed_sc_get_device_list(zed_SensorCapture* zsc,
                                   int32_t* serialNumbers,
@@ -62,9 +63,14 @@ ZED_ERRORS zed_sc_get_device_list(zed_SensorCapture* zsc,
  * 
  * @param zsc sensor capture object working with
  * @param sn the serial number of the device wanting to connect to
+ * @return ZED_ERRORS_NONE if all goes well
+ * @return ZED_ERRORS_NULL_INPUT if the input pointer is null
+ * @return ZED_ERRORS_CONNECT_FAIL if unable to connect, or find the Human Interface Device (HID)
  */
 ZED_ERRORS zed_sc_initialize_sensor(zed_SensorCapture* zsc,
                                     int32_t sn);
+
+void zed_sc_start(zed_SensorCapture* zsc);
 
 /**
  * @param timeout how long to wait for grabbing imu data before returning

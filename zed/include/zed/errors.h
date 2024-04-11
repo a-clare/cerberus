@@ -11,6 +11,8 @@ typedef enum {
   ZED_ERRORS_ALLOC_FAIL,
   // Return when a function receives a NULL input
   ZED_ERRORS_NULL_INPUT,
+  // Returns when a connection attempt failed
+  ZED_ERRORS_CONNECT_FAIL,
 } ZED_ERRORS;
 
 const char* zed_error_str(ZED_ERRORS err);
