@@ -228,7 +228,6 @@ void zed_sc_start(zed_SensorCapture* zsc) {
 
       usbBuf[1] = REP_ID_SENSOR_DATA;
       int res = hid_read_timeout(zsc->hid_handle, usbBuf, 64, 2000);
-      printf("res %d sizeof %d\n", res, (int)sizeof(RawData));
       if (res < (int)(sizeof(RawData))) {
         hid_set_nonblocking(zsc->hid_handle, 0);
         continue;
