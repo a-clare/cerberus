@@ -6,14 +6,40 @@ extern "C" {
 
 #include <stdint.h>
 
-/**
- * @brief Common struct that defines the image size parameters, and is used across all image types 
- */
+typedef enum {
+  CV_IMAGE_TYPE_NONE,
+  CV_IMAGE_TYPE_YUV,
+} CV_IMAGE_TYPE;
+
+typedef enum {
+  CV_IMAGE_ERROR_NONE,
+  CV_IMAGE_ERROR_READ,
+  CV_IMAGE_ERROR_ALLOC,
+  CV_IMAGE_ERROR_UNKNOWN_TYPE
+} CV_IMAGE_ERROR;
+
 typedef struct {
-  uint32_t width;
-  uint32_t height;
-  uint32_t channels;
-} cv_ImageSize;
+  uint32_t      width;
+  uint32_t      height;
+  uint32_t      channels;
+  CV_IMAGE_TYPE type;
+} cv_Image;
+
+/**
+ * @brief Read an image from some path
+ * 
+ * Will allocate memory for img
+ * 
+ * @param path "/some/path/to/an/image/to/read"
+ * @param img return image
+ * @return CV_IMAGE_ERROR_NONE if successful,
+ * @return CV_IMAGE_ERROR_READ if unable to open path, likely image does not exist or bad path
+ * @return CV_IMAGE_ERROR_ALLOC if unable to allocate memory
+ * @return CV_IMAGE_ERROR_UNKNOWN_TYPE the image at path is an unsupported type
+ */
+CV_IMAGE_ERROR cv_image_read(const char* path,
+                             cv_Image** img);
+
 
 #ifdef __cplusplus
 }
