@@ -10,8 +10,21 @@ list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
 find_package(HIDAPI REQUIRED)
 include_directories(${HIDAPI_INCLUDE_DIRS})
 
+
+enable_testing()
+# Each subdirectory/library will add their own test.cpp files to this variable
+# and then at the end we make one big unit test .exe in add_subdirectory(tests).
+# This is done so we can avoid the code duplication of each library having to making its own
+# exe, determining if they need to run the tests on build, and so on. Now we do it 
+# once in tests/
+set(CERBERUS_UNIT_TEST_SRCS "")
+
+add_subdirectory(cv)
 add_subdirectory(zed)
 add_executable(zed_main zed_main.c)
 target_link_libraries(zed_main PUBLIC zed)
 
-# add_subdirectory(external/zed-open-capture)
+
+if (CMAKE_TESTING_ENABLED)
+  add_subdirectory(tests)
+endif()
