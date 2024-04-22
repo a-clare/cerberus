@@ -1,6 +1,8 @@
 project(cv)
 
 include_directories(include)
+include_directories(external)
+
 add_library(${PROJECT_NAME}
             src/image.c)
 

@@ -23,6 +23,7 @@ typedef struct {
   uint32_t      height;
   uint32_t      channels;
   CV_IMAGE_TYPE type;
+  uint8_t*      data;
 } cv_Image;
 
 /**
