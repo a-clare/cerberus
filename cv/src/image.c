@@ -50,7 +50,7 @@ CV_IMAGE_ERROR cv_image_read(const char* path,
     case CV_FILE_EXT_BIN:
       break;  
   }
-  
+  return CV_IMAGE_ERROR_NONE;
 }
 
 static CV_FILE_EXT cv_get_file_ext(const char* path) {
