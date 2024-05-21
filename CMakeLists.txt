@@ -5,6 +5,11 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Debug)
 
+# The unit tests need a direct file path (/some/path/to/a/file) for loading in test data
+# or true data from a file
+# We set a compile time definition/#define so the unit tests can find the data
+add_compile_definitions(UNIT_TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/tests/test_data/")
+
 set(HIDAPI_FIND_COMPONENTS "libusb")
 list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
 find_package(HIDAPI REQUIRED)

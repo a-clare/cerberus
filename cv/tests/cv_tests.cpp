@@ -2,9 +2,15 @@
 #include "cv/image.h"
 #include "true_img_data.h"
 
+#ifndef UNIT_TEST_DATA_DIR
+assert("UNIT_TEST_DATA_DIR not defined, need this to find CV test data")
+#endif
+
+static const std::string CV_UNIT_TEST_DATA_DIR = std::string(UNIT_TEST_DATA_DIR) + "/cv/";
+
 TEST(CV, ReadPNG) {
   cv_Image* img;
-  auto err = cv_image_read("/home/atc/hds/data/kitti/2011_09_28/2011_09_28_drive_0002_sync/image_00/data/0000000000.png", &img);
+  auto err = cv_image_read((CV_UNIT_TEST_DATA_DIR + "/img_grey.png").c_str(), &img);
   EXPECT_EQ(err, CV_IMAGE_ERROR_NONE);
   EXPECT_EQ(img->height, 370);
   EXPECT_EQ(img->width, 1224);
